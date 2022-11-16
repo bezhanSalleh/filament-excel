@@ -224,7 +224,7 @@ class ExcelExport implements HasMapping, HasHeadings, FromQuery, ShouldAutoSize,
             ->success()
             ->seconds(5)
             ->icon('heroicon-o-inbox-in')
-            ->send();
+            ->sendToDatabase(auth()->user());
     }
 
     /**

@@ -71,7 +71,7 @@ class FilamentExcelServiceProvider extends ServiceProvider
                         ->close(),
                 ])
                 ->persistent()
-                ->send();
+                ->sendToDatabase(auth()->user());
         }
     }
 
