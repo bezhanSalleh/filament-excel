@@ -45,6 +45,13 @@ class FilamentExcelServiceProvider extends ServiceProvider
 
     public function sendExportFinishedNotification()
     {
+        /** @var SessionGuard $auth */
+        $auth = Filament::auth();
+
+        /** @var EloquentUserProvider $userProvider */
+        $userProvider = $auth->getProvider();
+
+        
         $exports = cache()->pull($this->getNotificationCacheKey(auth()->id()));
 
         if (! filled($exports)) {
@@ -58,6 +65,8 @@ class FilamentExcelServiceProvider extends ServiceProvider
                 ['path' => $export['filename']]
             );
 
+            $user = $userProvider->getModel()::findOrFail($export['userId']);
+
             Notification::make()
                 ->title(__('filament-excel::notifications.download_ready.title'))
                 ->body(__('filament-excel::notifications.download_ready.body'))
@@ -70,7 +79,7 @@ class FilamentExcelServiceProvider extends ServiceProvider
                         ->button()
                         ->close(),
                 ])
-                ->sendToDatabase(auth()->user());
+                ->sendToDatabase($user);
         }
     }
 
